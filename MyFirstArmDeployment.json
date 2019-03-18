@@ -5,32 +5,52 @@
         "customername": {
             "type": "string",
             "minLength": 1
+        },
+        "environment": {
+            "type": "string",
+            "allowedValues": [
+                "dev",
+                "test",
+                "prod"
+            ]
         }
     },
     "variables": {
-        "storagename": "[toLower(concat(parameters('customername'),'sto', uniqueString(parameters('customername'))))]"
+        "storagename": "[toLower(concat(parameters('customername'),'sto', uniqueString(parameters('customername'), parameters('environment'))))]",
+        "storagetype": {
+            "dev": "Standard_LRS",
+            "test": "Standard_LRS",
+            "prod": "Standard_GRS"
+        },
+        "storageCnt": {
+            "dev": 1,
+            "test": 1,
+            "prod": 3
+        },
+        "selectedstoragetype": "[variables('storagetype')[parameters('environment')]]",
+        "selectedStorageCnt": "[variables('storageCnt')[parameters('environment')]]"
     },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('storagename')]",
+            "name": "[concat(variables('storagename'), copyIndex())]",
             "location": "[resourceGroup().location]",
             "apiVersion": "2018-07-01",
             "sku": {
-              "name": "Standard_LRS"
+                "name": "[variables('selectedstoragetype')]"
             },
             "kind": "StorageV2",
-            "properties": {}
-          }
+            "properties": {},
+            "copy": {
+                "name": "accounts",
+                "count": "[variables('selectedStorageCnt')]"
+            }
+        }
     ],
     "outputs": {
         "greeting": {
             "type": "string",
             "value": "[concat('Hello ', parameters('customername'))]"
-        },
-        "storageAccountKey": {
-            "type": "object",
-            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storagename')), '2018-07-01')]"
         }
     }
 }
