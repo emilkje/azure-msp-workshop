@@ -8,12 +8,21 @@
         }
     },
     "variables": {
-        "storagename": {
-            "type": "string",
-            "value": "[toLower(concat(parameters('customername'),'sto', uniqueString(parameters('customername'))))]"
-        }
+        "storagename": "[toLower(concat(parameters('customername'),'sto', uniqueString(parameters('customername'))))]"
     },
-    "resources": [],
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storagename')]",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2018-07-01",
+            "sku": {
+              "name": "Standard_LRS"
+            },
+            "kind": "StorageV2",
+            "properties": {}
+          }
+    ],
     "outputs": {
         "greeting": {
             "type": "string",
