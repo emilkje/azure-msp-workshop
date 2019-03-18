@@ -27,6 +27,10 @@
         "greeting": {
             "type": "string",
             "value": "[concat('Hello ', parameters('customername'))]"
+        },
+        "storageAccountKey": {
+            "type": "object",
+            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storagename')), '2018-07-01')]"
         }
     }
 }
