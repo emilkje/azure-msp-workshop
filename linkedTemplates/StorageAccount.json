@@ -2,49 +2,31 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "customername": {
+        "storagename": {
             "type": "string",
             "minLength": 1
         },
-        "environment": {
+        "storagetype": {
             "type": "string",
+            "defaultValue": "Standard_LRS",
             "allowedValues": [
-                "dev",
-                "test",
-                "prod"
+                "Standard_LRS",
+                "Standard_GRS"
             ]
         }
     },
-    "variables": {
-        "storagename": "[toLower(concat(parameters('customername'),'sto', uniqueString(parameters('customername'), parameters('environment'))))]",
-        "storagetype": {
-            "dev": "Standard_LRS",
-            "test": "Standard_LRS",
-            "prod": "Standard_GRS"
-        },
-        "storageCnt": {
-            "dev": 1,
-            "test": 1,
-            "prod": 3
-        },
-        "selectedstoragetype": "[variables('storagetype')[parameters('environment')]]",
-        "selectedStorageCnt": "[variables('storageCnt')[parameters('environment')]]"
-    },
+    "variables": { },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[concat(variables('storagename'), copyIndex())]",
+            "name": "[parameters('storagename')]",
             "location": "[resourceGroup().location]",
             "apiVersion": "2018-07-01",
             "sku": {
-                "name": "[variables('selectedstoragetype')]"
+                "name": "[parameters('storagetype')]"
             },
             "kind": "StorageV2",
-            "properties": {},
-            "copy": {
-                "name": "accounts",
-                "count": "[variables('selectedStorageCnt')]"
-            }
+            "properties": {}
         }
     ],
     "outputs": { }

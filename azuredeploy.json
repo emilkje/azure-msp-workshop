@@ -15,11 +15,23 @@
             ]
         }
     },
-    "variables": { },
+    "variables": {
+        "storagename": "[toLower(concat(parameters('customername'),'sto', uniqueString(parameters('customername'), parameters('environment'))))]",
+        "storagetype": {
+            "dev": "Standard_LRS",
+            "test": "Standard_LRS",
+            "prod": "Standard_GRS"
+        },
+        "storageCnt": {
+            "dev": 1,
+            "test": 1,
+            "prod": 3
+        }
+    },
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "linkedTemplate",
+            "name": "[concat('storageaccount', copyIndex())]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
               "mode": "Incremental",
@@ -28,9 +40,13 @@
                  "contentVersion":"1.0.0.0"
               },
               "parameters": {
-                 "environment":{"value": "[parameters('environment')]"},
-                 "customername": {"value": "[parameters('customername')]"}
+                 "storagename":{"value": "[concat(variables('storagename'), copyIndex())]"},
+                 "storagetype": {"value": "[variables('storagetype')[parameters('environment')]]"}
                }
+            },
+            "copy": {
+                "name": "accounts",
+                "count": "[variables('storageCnt')[parameters('environment')]]"
             }
          }
     ],
