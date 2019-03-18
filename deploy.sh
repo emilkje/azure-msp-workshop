@@ -1,5 +1,6 @@
 LOC='westeurope'
-TEMPL='MyFirstArmDeployment.json'
 GROUP='DevOpsDemo'
+TEMPL='MyFirstArmDeployment.json'
+PARAMS_FILE='MyFirstArmDeployment.parameters.json'
 
-az group deployment create -g $GROUP --template-file $TEMPL
+az group deployment create -g $GROUP --template-file $TEMPL --parameters $PARAMS_FILE
