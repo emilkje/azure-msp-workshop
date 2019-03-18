@@ -1,3 +1,5 @@
 LOC='westeurope'
 TEMPL='MyFirstArmDeployment.json'
-az deployment validate --template-file $TEMPL -l $LOC
+GROUP='DevOpsDemo'
+
+az group deployment create -g $GROUP --template-file $TEMPL

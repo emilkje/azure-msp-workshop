@@ -1,8 +1,18 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {},
+    "parameters": {
+        "customername": {
+            "type": "string",
+            "minLength": 1
+        }
+    },
     "variables": {},
     "resources": [],
-    "outputs": {}
+    "outputs": {
+        "greeting": {
+            "type": "string",
+            "value": "[concat('Hello ', parameters('customername'))]"
+        }
+    }
 }
