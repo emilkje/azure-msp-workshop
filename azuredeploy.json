@@ -1,0 +1,43 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "customername": {
+            "type": "string",
+            "minLength": 1
+        },
+        "environment": {
+            "type": "string",
+            "allowedValues": [
+                "dev",
+                "test",
+                "prod"
+            ]
+        }
+    },
+    "variables": { },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "linkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/emilkje/azure-msp-workshop/master/linkedTemplates/StorageAccount.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                 "environment":{"value": "[parameters('environment')]"},
+                 "customername": {"value": "[parameters('customername')]"}
+               }
+            }
+         }
+    ],
+    "outputs": {
+        "greeting": {
+            "type": "string",
+            "value": "[concat('Hello ', parameters('customername'))]"
+        }
+    }
+}

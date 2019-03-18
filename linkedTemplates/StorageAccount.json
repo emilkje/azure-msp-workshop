@@ -47,10 +47,5 @@
             }
         }
     ],
-    "outputs": {
-        "greeting": {
-            "type": "string",
-            "value": "[concat('Hello ', parameters('customername'))]"
-        }
-    }
+    "outputs": { }
 }
